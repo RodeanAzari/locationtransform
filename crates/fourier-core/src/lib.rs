@@ -6,6 +6,7 @@ pub mod complex;
 pub mod fft;
 pub mod resample;
 pub mod series;
+pub mod hausdorff;
 #[cfg(test)]
 mod test_util;
 
