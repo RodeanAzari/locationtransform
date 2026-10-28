@@ -4,6 +4,7 @@ use wasm_bindgen::prelude::*;
 
 pub mod complex;
 pub mod fft;
+pub mod resample;
 #[cfg(test)]
 mod test_util;
 
