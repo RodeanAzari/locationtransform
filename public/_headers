@@ -1,0 +1,8 @@
+# Cloudflare Pages response headers.
+# Vite emits content-hashed files under /assets (JS, CSS, WASM), so they never change.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Place data is regenerated on deploy but rarely changes.
+/data/*
+  Cache-Control: public, max-age=86400
