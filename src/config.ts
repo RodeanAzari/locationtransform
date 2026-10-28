@@ -3,6 +3,23 @@ export const config = {
   /** Base URL of the generated data (respects Vite's `base`). */
   dataUrl: `${import.meta.env.BASE_URL}data`,
 
+  // Search.
+  /** Maximum local-index suggestions shown. */
+  localSuggestionLimit: 8,
+  /** Photon autocomplete (OSM). Nominatim's policy forbids autocomplete, so Photon does it. */
+  photonUrl: 'https://photon.komoot.io/api/',
+  photonLimit: 10,
+  photonMinChars: 3,
+  photonDebounceMs: 300,
+  /** Nominatim lookup, used once per selected OSM place to fetch its boundary polygon. */
+  nominatimLookupUrl: 'https://nominatim.openstreetmap.org/lookup',
+  /** Contact address sent to Nominatim per its usage policy; omitted when empty. */
+  nominatimEmail: '',
+  /** Minimum gap between Nominatim requests (policy: at most 1 per second). */
+  nominatimIntervalMs: 1100,
+  /** Server-side polygon simplification tolerance (degrees, ≈ 5 m). */
+  nominatimPolygonThreshold: 0.00005,
+
   // Accuracy and Fourier core (passed to fourier-core).
   /** Target normalized Hausdorff error (0.1% of the place's bounding-box diagonal). */
   accuracyTarget: 0.001,
