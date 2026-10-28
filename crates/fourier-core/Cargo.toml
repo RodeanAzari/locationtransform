@@ -1,0 +1,16 @@
+[package]
+name = "fourier-core"
+version = "0.1.0"
+edition = "2024"
+description = "Fourier epicycle math for Fourier Borders: resampling, FFT, reconstruction, Hausdorff, findN."
+license = "MIT"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = true
