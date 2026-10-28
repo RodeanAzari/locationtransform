@@ -16,7 +16,7 @@ export const config = {
   /** Nominatim lookup, used once per selected OSM place to fetch its boundary polygon. */
   nominatimLookupUrl: 'https://nominatim.openstreetmap.org/lookup',
   /** Contact address sent to Nominatim per its usage policy; omitted when empty. */
-  nominatimEmail: '',
+  nominatimEmail: 'locationtransform@rodeanazari.dev',
   /** Minimum gap between Nominatim requests (policy: at most 1 per second). */
   nominatimIntervalMs: 1100,
   /** Server-side polygon simplification tolerance (degrees, ≈ 5 m). */
