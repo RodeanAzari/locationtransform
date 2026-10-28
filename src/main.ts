@@ -1,15 +1,41 @@
-import type { AnalyzeRequest, AnalyzeResponse } from './worker';
+import type { MultiPolygon, Polygon } from 'geojson';
+import './style.css';
+import { config } from './config';
+import { FourierClient } from './fourier/client';
+import { PlaceView } from './ui/placeView';
+
+interface ShapeFile {
+  id: string;
+  name: string;
+  geometry: Polygon | MultiPolygon;
+}
 
 const app = document.querySelector<HTMLElement>('#app')!;
-const worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
+const client = new FourierClient();
 
-worker.addEventListener('message', (event: MessageEvent<AnalyzeResponse>) => {
-  const { n, error, targetReached } = event.data;
-  app.textContent = `Square: N = ${n}, error = ${(error * 100).toFixed(3)}%, target reached: ${targetReached}`;
+async function showPlace(id: string): Promise<void> {
+  const status = document.createElement('p');
+  status.className = 'status';
+  status.textContent = 'Loading…';
+  app.replaceChildren(status);
+
+  const response = await fetch(`${config.dataUrl}/shapes/${encodeURIComponent(id)}.json`);
+  if (!response.ok) {
+    status.textContent = `Unknown place “${id}”.`;
+    return;
+  }
+  const shape = (await response.json()) as ShapeFile;
+  status.textContent = `Computing ${shape.name}…`;
+  const place = await client.analyze(shape.geometry);
+
+  const heading = document.createElement('h1');
+  heading.textContent = shape.name;
+  const view = new PlaceView(place);
+  app.replaceChildren(heading, view.element);
+  view.start();
+}
+
+const placeId = new URLSearchParams(location.search).get('place') ?? config.defaultPlaceId;
+showPlace(placeId).catch((error: unknown) => {
+  app.textContent = `Something went wrong: ${error instanceof Error ? error.message : String(error)}`;
 });
-
-const request: AnalyzeRequest = {
-  xy: new Float64Array([0, 0, 100, 0, 100, 100, 0, 100]),
-  placeDiagonal: 100 * Math.SQRT2,
-};
-worker.postMessage(request);
