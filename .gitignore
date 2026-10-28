@@ -1,0 +1,19 @@
+# Node
+node_modules/
+dist/
+*.log
+.vite/
+
+# Rust / wasm-pack
+target/
+crates/*/pkg/
+
+# Data pipeline downloads (generated output in public/data is decided later)
+.cache/
+
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
