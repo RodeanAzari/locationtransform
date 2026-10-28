@@ -2,6 +2,8 @@
 export const config = {
   /** Base URL of the generated data (respects Vite's `base`). */
   dataUrl: `${import.meta.env.BASE_URL}data`,
+  /** Source repository, linked from the landing page. */
+  githubUrl: 'https://github.com/RodeanAzari/locationtransform',
 
   // Search.
   /** Maximum local-index suggestions shown. */

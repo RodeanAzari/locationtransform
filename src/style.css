@@ -187,13 +187,13 @@ h1 {
 /* Landing */
 
 .landing {
-  flex: 1;
+  min-height: 55dvh;
+  padding-top: 8dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding-bottom: 20vh;
   text-align: center;
 }
 
@@ -326,6 +326,46 @@ h1 {
 }
 .attribution a {
   color: inherit;
+}
+
+.github-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--track);
+  border-radius: 999px;
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.github-button:hover,
+.github-button:focus-visible {
+  border-color: var(--accent);
+}
+
+/* About */
+
+.about {
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.about h2 {
+  margin: 2rem 0 0.5rem;
+  font-size: 1.15rem;
+}
+.about a {
+  color: var(--accent);
+}
+.about ul {
+  padding-left: 1.2rem;
+}
+.about .formula {
+  text-align: center;
+  font-family: 'Cambria Math', 'STIX Two Math', Georgia, serif;
+  font-size: 1.15rem;
 }
 
 /* Equation panel */

@@ -8,6 +8,7 @@ import { FourierClient } from './fourier/client';
 import { OsmUnavailableError, loadPlace, type PlaceSource } from './places';
 import { LocalIndex, describe, normalize, type IndexEntry } from './search/localIndex';
 import { searchPhoton } from './search/photon';
+import { aboutSection, githubButton, landingFooter } from './ui/about';
 import { PlaceView } from './ui/placeView';
 import { SearchBox, type Suggestion } from './ui/searchBox';
 
@@ -83,16 +84,16 @@ function homeLink(): HTMLAnchorElement {
 
 function showLanding(): void {
   document.title = APP_TITLE;
-  const landing = document.createElement('section');
-  landing.className = 'landing';
+  const hero = document.createElement('section');
+  hero.className = 'landing';
   const heading = document.createElement('h1');
   heading.textContent = APP_TITLE;
   const tagline = document.createElement('p');
   tagline.className = 'tagline';
   tagline.textContent = 'Any border, drawn by spinning circles.';
   const search = createSearchBox();
-  landing.append(heading, tagline, search.element);
-  app.replaceChildren(landing);
+  hero.append(heading, tagline, search.element, githubButton());
+  app.replaceChildren(hero, aboutSection(), landingFooter());
   search.focus();
 }
 
