@@ -8,8 +8,9 @@ dist/
 target/
 crates/*/pkg/
 
-# Data pipeline downloads (generated output in public/data is decided later)
+# Data pipeline: downloads and generated output (built by `npm run data`, also in CI)
 .cache/
+public/data/
 
 # Editors / OS
 .vscode/*

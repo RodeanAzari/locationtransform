@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "wasm": "wasm-pack build crates/fourier-core --target web --release",
+    "data": "node scripts/build-data.ts",
     "dev": "npm run wasm && vite",
     "build": "npm run wasm && tsc --noEmit && vite build",
     "preview": "vite preview",
@@ -12,6 +13,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
+    "mapshaper": "^0.7.100",
     "typescript": "^7.0.2",
     "vite": "^8.3.5"
   }
