@@ -2,8 +2,6 @@
 export const config = {
   /** Base URL of the generated data (respects Vite's `base`). */
   dataUrl: `${import.meta.env.BASE_URL}data`,
-  /** Place shown when the URL has no `?place=`. */
-  defaultPlaceId: 'country-ita',
 
   // Accuracy and Fourier core (passed to fourier-core).
   /** Target normalized Hausdorff error (0.1% of the place's bounding-box diagonal). */
