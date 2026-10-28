@@ -7,6 +7,7 @@ pub mod fft;
 pub mod resample;
 pub mod series;
 pub mod hausdorff;
+pub mod find_n;
 #[cfg(test)]
 mod test_util;
 
