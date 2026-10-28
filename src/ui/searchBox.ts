@@ -1,4 +1,8 @@
-/** Search box with an autocomplete list (ARIA combobox; ↑/↓/Enter/Esc and mouse). */
+/**
+ * Search box with an autocomplete list (ARIA combobox; ↑/↓/Enter/Esc and mouse).
+ * Instant local suggestions come first; an optional slower remote source is queried after a
+ * debounce (aborting any request in flight) and listed below a divider.
+ */
 
 export interface Suggestion {
   id: string;
@@ -7,10 +11,20 @@ export interface Suggestion {
   detail: string;
 }
 
+export interface RemoteSource {
+  /** Divider label shown above remote results. */
+  label: string;
+  minChars: number;
+  debounceMs: number;
+  /** Remote suggestions for `query`; `local` is what is already shown (for de-duplication). */
+  suggest(query: string, local: Suggestion[], signal: AbortSignal): Promise<Suggestion[]>;
+}
+
 export interface SearchBoxOptions {
   placeholder: string;
-  /** Returns suggestions for a query. */
+  /** Instant suggestions for a query. */
   suggest(query: string): Suggestion[];
+  remote?: RemoteSource;
   onSelect(suggestion: Suggestion): void;
 }
 
@@ -21,8 +35,11 @@ export class SearchBox {
   private readonly input: HTMLInputElement;
   private readonly list: HTMLUListElement;
   private readonly listId = `search-list-${instances++}`;
-  private suggestions: Suggestion[] = [];
+  private local: Suggestion[] = [];
+  private remote: Suggestion[] = [];
   private active = -1;
+  private remoteTimer = 0;
+  private remoteRequest: AbortController | null = null;
 
   constructor(private readonly options: SearchBoxOptions) {
     this.element = document.createElement('div');
@@ -53,44 +70,82 @@ export class SearchBox {
     this.input.focus();
   }
 
+  /** Local results followed by remote ones; option indexes refer to this list. */
+  private get suggestions(): Suggestion[] {
+    return [...this.local, ...this.remote];
+  }
+
   private update(): void {
-    this.suggestions = this.options.suggest(this.input.value);
+    const query = this.input.value;
+    this.local = this.options.suggest(query);
+    this.remote = [];
     this.active = -1;
+    this.cancelRemote();
     this.render();
+    const source = this.options.remote;
+    if (source && query.trim().length >= source.minChars) {
+      const local = this.local;
+      this.remoteTimer = window.setTimeout(() => {
+        const request = new AbortController();
+        this.remoteRequest = request;
+        source
+          .suggest(query, local, request.signal)
+          .then((results) => {
+            if (request.signal.aborted) return;
+            this.remote = results;
+            this.render();
+          })
+          .catch(() => undefined); // Offline or aborted: local results still work.
+      }, source.debounceMs);
+    }
+  }
+
+  private cancelRemote(): void {
+    clearTimeout(this.remoteTimer);
+    this.remoteRequest?.abort();
+    this.remoteRequest = null;
   }
 
   private render(): void {
-    this.list.replaceChildren(
-      ...this.suggestions.map((s, i) => {
-        const item = document.createElement('li');
-        item.id = `${this.listId}-${i}`;
-        item.role = 'option';
-        item.dataset.index = String(i);
-        item.setAttribute('aria-selected', String(i === this.active));
-        item.setAttribute('aria-label', `${s.title} — ${s.detail}`);
-        const title = document.createElement('span');
-        title.className = 'title';
-        title.textContent = s.title;
-        const detail = document.createElement('span');
-        detail.className = 'detail';
-        detail.textContent = s.detail;
-        item.append(title, detail);
-        return item;
-      }),
-    );
-    const open = this.suggestions.length > 0;
+    const items = this.suggestions.map((s, i) => {
+      const item = document.createElement('li');
+      item.id = `${this.listId}-${i}`;
+      item.role = 'option';
+      item.dataset.index = String(i);
+      item.setAttribute('aria-selected', String(i === this.active));
+      item.setAttribute('aria-label', `${s.title} — ${s.detail}`);
+      const title = document.createElement('span');
+      title.className = 'title';
+      title.textContent = s.title;
+      const detail = document.createElement('span');
+      detail.className = 'detail';
+      detail.textContent = s.detail;
+      item.append(title, detail);
+      return item;
+    });
+    if (this.remote.length > 0) {
+      const divider = document.createElement('li');
+      divider.role = 'presentation';
+      divider.className = 'divider';
+      divider.textContent = this.options.remote!.label;
+      items.splice(this.local.length, 0, divider);
+    }
+    this.list.replaceChildren(...items);
+    const open = items.length > 0;
     this.list.hidden = !open;
     this.input.setAttribute('aria-expanded', String(open));
     if (this.active >= 0) {
       this.input.setAttribute('aria-activedescendant', `${this.listId}-${this.active}`);
-      this.list.children[this.active].scrollIntoView({ block: 'nearest' });
+      document.getElementById(`${this.listId}-${this.active}`)?.scrollIntoView({ block: 'nearest' });
     } else {
       this.input.removeAttribute('aria-activedescendant');
     }
   }
 
   private close(): void {
-    this.suggestions = [];
+    this.cancelRemote();
+    this.local = [];
+    this.remote = [];
     this.active = -1;
     this.render();
   }

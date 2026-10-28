@@ -295,3 +295,37 @@ h1 {
   font-size: 0.85rem;
   text-align: right;
 }
+
+.search-box .divider {
+  padding: 8px 10px 4px;
+  margin-top: 4px;
+  border-top: 1px solid var(--track);
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: default;
+}
+
+/* Place heading and attribution */
+
+.place-heading {
+  margin-bottom: 12px;
+}
+.place-heading h1 {
+  margin: 0;
+}
+.place-heading p {
+  margin: 2px 0 0;
+  color: var(--muted);
+}
+
+.attribution {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+.attribution a {
+  color: inherit;
+}
