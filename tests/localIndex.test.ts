@@ -2,7 +2,16 @@ import { describe as group, expect, it } from 'vitest';
 import { LocalIndex, describe, normalize, type IndexEntry } from '../src/search/localIndex';
 
 function entry(id: string, name: string, extra: Partial<IndexEntry> = {}): IndexEntry {
-  return { id, name, altNames: [], kind: 'admin1', typeLabel: 'State', parent: 'Somewhere', countryCode: null, ...extra };
+  return {
+    id,
+    name,
+    altNames: [],
+    kind: 'admin1',
+    typeLabel: 'State',
+    parent: 'Somewhere',
+    countryCode: null,
+    ...extra,
+  };
 }
 
 const index = new LocalIndex([

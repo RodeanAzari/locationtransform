@@ -20,30 +20,30 @@ import init, { Options, analyzeRing } from 'fourier-core';
 await init();
 const options = new Options(
   placeDiagonal, // km, bounding-box diagonal of the whole place (all kept rings)
-  target,        // normalized Hausdorff target, e.g. 0.001
-  minSamples,    // power of two, e.g. 256
-  maxSamples,    // power of two, e.g. 4096
+  target, // normalized Hausdorff target, e.g. 0.001
+  minSamples, // power of two, e.g. 256
+  maxSamples, // power of two, e.g. 4096
   sampleSpacing, // resample spacing as a fraction of placeDiagonal, e.g. 0.0005
-  lookahead,     // term counts after N that must also meet the target, e.g. 3
-  curveSamples,  // approximate number of error-curve samples, e.g. 48
+  lookahead, // term counts after N that must also meet the target, e.g. 3
+  curveSamples, // approximate number of error-curve samples, e.g. 48
 );
 const ring = analyzeRing(xy /* Float64Array: x0, y0, x1, y1, … in km */, options);
 ```
 
 `analyzeRing` throws if the ring has fewer than 3 points, has zero perimeter, or the options are out of range.
 
-| `RingAnalysis` getter | Type | Meaning |
-| --- | --- | --- |
-| `sampleCount` | `number` | M |
-| `resampledXy` | `Float64Array` (2M) | The resampled true ring, used for the ghost outline |
-| `c0Re`, `c0Im` | `number` | Centre coefficient c₀ |
-| `n` | `number` | N for this ring (terms excluding c₀) |
-| `termK` | `Int32Array` (N) | Frequencies, largest amplitude first |
-| `termRe`, `termIm` | `Float64Array` (N) | Coefficients, same order as `termK` |
-| `error` | `number` | Normalized Hausdorff error at N |
-| `targetReached` | `boolean` | `false` only if N hit the cap of M/2 |
-| `curveN` | `Uint32Array` | Term counts where the error was sampled: ascending, 1 … N, including 1, 3, 10, 50 |
-| `curveError` | `Float64Array` | Normalized error at each `curveN` |
+| `RingAnalysis` getter | Type                | Meaning                                                                           |
+| --------------------- | ------------------- | --------------------------------------------------------------------------------- |
+| `sampleCount`         | `number`            | M                                                                                 |
+| `resampledXy`         | `Float64Array` (2M) | The resampled true ring, used for the ghost outline                               |
+| `c0Re`, `c0Im`        | `number`            | Centre coefficient c₀                                                             |
+| `n`                   | `number`            | N for this ring (terms excluding c₀)                                              |
+| `termK`               | `Int32Array` (N)    | Frequencies, largest amplitude first                                              |
+| `termRe`, `termIm`    | `Float64Array` (N)  | Coefficients, same order as `termK`                                               |
+| `error`               | `number`            | Normalized Hausdorff error at N                                                   |
+| `targetReached`       | `boolean`           | `false` only if N hit the cap of M/2                                              |
+| `curveN`              | `Uint32Array`       | Term counts where the error was sampled: ascending, 1 … N, including 1, 3, 10, 50 |
+| `curveError`          | `Float64Array`      | Normalized error at each `curveN`                                                 |
 
 Each getter returns a fresh copy. `Options` and `RingAnalysis` live in WASM memory, so call `.free()` on them when you're done (or use `using` with `Symbol.dispose`).
 

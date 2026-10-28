@@ -83,7 +83,18 @@ const LAYERS: Layer[] = [
   {
     file: 'ne_10m_admin_0_countries',
     kind: 'country',
-    fields: ['ADM0_A3', 'NAME', 'NAME_LONG', 'FORMAL_EN', 'NAME_ALT', 'ADMIN', 'BRK_NAME', 'NAME_EN', 'ISO_A2_EH', 'TYPE'],
+    fields: [
+      'ADM0_A3',
+      'NAME',
+      'NAME_LONG',
+      'FORMAL_EN',
+      'NAME_ALT',
+      'ADMIN',
+      'BRK_NAME',
+      'NAME_EN',
+      'ISO_A2_EH',
+      'TYPE',
+    ],
     toEntry: (p) => {
       // NAME is abbreviated for some places ("St. Vin. and Gren."); ADMIN is the full name but
       // drops diacritics ("Aland"), so keep NAME when the two differ only by accents.

@@ -12,7 +12,7 @@ function open(): Promise<IDBDatabase> {
     const request = indexedDB.open(DB_NAME, 1);
     request.onupgradeneeded = () => request.result.createObjectStore(STORE);
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onerror = () => reject(request.error ?? new Error('IndexedDB open failed'));
   });
   return dbPromise;
 }
@@ -20,7 +20,7 @@ function open(): Promise<IDBDatabase> {
 function wrap<T>(request: IDBRequest<T>): Promise<T> {
   return new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onerror = () => reject(request.error ?? new Error('IndexedDB request failed'));
   });
 }
 

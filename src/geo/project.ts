@@ -29,10 +29,7 @@ export function sphericalCentroid(rings: LonLatRing[]): [number, number] {
 
 /** Projects rings with an azimuthal equal-area projection centred on `center`, in km. */
 export function projectRings(rings: LonLatRing[], center: [number, number]): XYRing[] {
-  const projection = geoAzimuthalEqualArea()
-    .rotate([-center[0], -center[1]])
-    .scale(EARTH_RADIUS_KM)
-    .translate([0, 0]);
+  const projection = geoAzimuthalEqualArea().rotate([-center[0], -center[1]]).scale(EARTH_RADIUS_KM).translate([0, 0]);
   return rings.map((ring) =>
     ring.map(([lon, lat]) => {
       const [px, py] = projection([lon, lat])!;

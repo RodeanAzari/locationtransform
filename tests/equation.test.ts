@@ -61,7 +61,11 @@ describe('reconstructionLatex', () => {
 
 describe('coefficientsJson', () => {
   it('lists c0 as k = 0 followed by the current terms', () => {
-    const parsed = JSON.parse(coefficientsJson(ring(10), 2, 'Main polygon'));
+    const parsed = JSON.parse(coefficientsJson(ring(10), 2, 'Main polygon')) as {
+      ring: string;
+      units: string;
+      terms: { k: number; re: number; im: number; amplitude: number; phase: number }[];
+    };
     expect(parsed.ring).toBe('Main polygon');
     expect(parsed.units).toBe('km');
     expect(parsed.terms).toHaveLength(3);

@@ -11,7 +11,11 @@
   --circle: rgba(47, 111, 223, 0.35);
   --arm: rgba(29, 35, 48, 0.7);
   --thumb: 18px;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {

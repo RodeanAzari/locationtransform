@@ -11,8 +11,7 @@ export interface AnalyzeRequest {
 }
 
 export type AnalyzeResponse =
-  | { requestId: number; ok: true; place: PlaceSeries }
-  | { requestId: number; ok: false; message: string };
+  { requestId: number; ok: true; place: PlaceSeries } | { requestId: number; ok: false; message: string };
 
 const ready = init();
 
@@ -53,15 +52,18 @@ function analyze(geometry: Polygon | MultiPolygon): PlaceSeries {
   }
 }
 
-addEventListener('message', async (event: MessageEvent<AnalyzeRequest>) => {
-  const { requestId, geometry } = event.data;
+async function handle({ requestId, geometry }: AnalyzeRequest): Promise<void> {
   try {
     await ready;
     const place = analyze(geometry);
-    const transfer = place.rings.flatMap((r) => [r.k, r.re, r.im, r.curveN, r.curveError, r.truth].map((a) => a.buffer));
+    const transfer = place.rings.flatMap((r) =>
+      [r.k, r.re, r.im, r.curveN, r.curveError, r.truth].map((a) => a.buffer),
+    );
     postMessage({ requestId, ok: true, place } satisfies AnalyzeResponse, { transfer });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     postMessage({ requestId, ok: false, message } satisfies AnalyzeResponse);
   }
-});
+}
+
+addEventListener('message', (event: MessageEvent<AnalyzeRequest>) => void handle(event.data));

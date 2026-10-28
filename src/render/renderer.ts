@@ -160,10 +160,7 @@ export class EpicycleRenderer {
   }
 
   private toScreen(x: number, y: number): [number, number] {
-    return [
-      this.width / 2 + (x - this.center[0]) * this.scale,
-      this.height / 2 - (y - this.center[1]) * this.scale,
-    ];
+    return [this.width / 2 + (x - this.center[0]) * this.scale, this.height / 2 - (y - this.center[1]) * this.scale];
   }
 
   private readTheme(): Theme {

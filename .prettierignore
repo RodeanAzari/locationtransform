@@ -1,0 +1,7 @@
+dist/
+target/
+crates/*/pkg/
+public/data/
+.cache/
+package-lock.json
+CLAUDE.md
