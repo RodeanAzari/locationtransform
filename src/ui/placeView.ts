@@ -8,6 +8,7 @@ import { config } from '../config';
 import { placeErrorAt } from '../fourier/series';
 import type { PlaceSeries } from '../fourier/types';
 import { EpicycleRenderer } from '../render/renderer';
+import { EquationPanel } from './equationPanel';
 import { snapStops } from './scale';
 import { TermSlider } from './slider';
 
@@ -15,6 +16,7 @@ export class PlaceView {
   readonly element: HTMLElement;
   private readonly renderer: EpicycleRenderer;
   private readonly slider: TermSlider;
+  private readonly equation: EquationPanel;
   private readonly reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   private terms: number;
   private playing = true;
@@ -53,6 +55,8 @@ export class PlaceView {
       note.textContent = `+${place.droppedRings} small ${place.droppedRings === 1 ? 'island' : 'islands'} not shown`;
       this.element.append(note);
     }
+    this.equation = new EquationPanel(place);
+    this.element.append(this.equation.element);
 
     this.renderer = new EpicycleRenderer(canvas);
     this.slider.setMax(place.n);
@@ -81,6 +85,7 @@ export class PlaceView {
 
   destroy(): void {
     cancelAnimationFrame(this.frame);
+    this.equation.destroy();
     this.resizeObserver.disconnect();
     this.colorScheme.removeEventListener('change', this.onSchemeChange);
   }
@@ -92,6 +97,7 @@ export class PlaceView {
     const atTarget = n >= this.place.n;
     const reached = this.place.rings.every((ring) => ring.targetReached);
     this.slider.setReadout(n, placeErrorAt(this.place, n), atTarget, reached);
+    this.equation.setTerms(n);
     if (this.reducedMotion) this.draw();
   }
 

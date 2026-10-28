@@ -59,17 +59,15 @@ h1 {
 }
 
 .place-view {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 0;
 }
 
 .epicycles {
-  flex: 1;
   width: 100%;
-  min-height: 320px;
+  height: min(65dvh, 640px);
+  min-height: 300px;
   display: block;
 }
 
@@ -328,4 +326,44 @@ h1 {
 }
 .attribution a {
   color: inherit;
+}
+
+/* Equation panel */
+
+.equation-panel {
+  border-top: 1px solid var(--track);
+  padding-top: 8px;
+  min-width: 0;
+}
+.equation-panel .katex-display {
+  margin: 0.4em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+}
+.equation-general {
+  color: var(--muted);
+}
+.equation-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 16px;
+  font-size: 0.9rem;
+}
+.equation-controls select,
+.equation-controls button {
+  font: inherit;
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--track);
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+.equation-controls button {
+  cursor: pointer;
+}
+.equation-controls button:hover,
+.equation-controls select:hover {
+  border-color: var(--accent);
 }
