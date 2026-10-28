@@ -94,8 +94,9 @@ export class LocalIndex {
   }
 
   /**
-   * Best matches for `query`, at most `limit`. Typo-tolerant matching only runs when exact-text
-   * matches don't fill the list. Ties favour countries, then shorter names.
+   * Best matches for `query`, at most `limit`. Typo-tolerant matching only runs when nothing
+   * matches the text exactly, so it never pads real results with noise. Ties favour
+   * countries, then shorter names.
    */
   search(query: string, limit: number): IndexEntry[] {
     const q = normalize(query);
@@ -105,7 +106,7 @@ export class LocalIndex {
       const score = rank(p, q);
       if (score !== null) matches.push({ p, score });
     }
-    if (matches.length < limit) {
+    if (matches.length === 0) {
       for (const p of this.prepared) {
         if (rank(p, q) === null && (fuzzyPrefix(q, p.name) || p.altNames.some((a) => fuzzyPrefix(q, a)))) {
           matches.push({ p, score: FUZZY_RANK });
