@@ -85,13 +85,16 @@ const LAYERS: Layer[] = [
     kind: 'country',
     fields: ['ADM0_A3', 'NAME', 'NAME_LONG', 'FORMAL_EN', 'NAME_ALT', 'ADMIN', 'BRK_NAME', 'NAME_EN', 'ISO_A2_EH', 'TYPE'],
     toEntry: (p) => {
-      const name = str(p.NAME);
+      // NAME is abbreviated for some places ("St. Vin. and Gren."); ADMIN is the full name but
+      // drops diacritics ("Aland"), so keep NAME when the two differ only by accents.
+      const plain = (s: string): string => s.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+      const name = plain(str(p.ADMIN)) === plain(str(p.NAME)) ? str(p.NAME) : str(p.ADMIN);
       const type = str(p.TYPE);
       return {
         id: `country-${slug(str(p.ADM0_A3))}`,
         name,
         altNames: altNames(name, [
-          ...[p.NAME_LONG, p.FORMAL_EN, p.ADMIN, p.BRK_NAME, p.NAME_EN].map(str),
+          ...[p.NAME, p.NAME_LONG, p.FORMAL_EN, p.ADMIN, p.BRK_NAME, p.NAME_EN].map(str),
           ...list(p.NAME_ALT),
         ]),
         typeLabel: type === 'Sovereign country' || type === 'Country' ? 'Country' : 'Territory',
