@@ -1,6 +1,11 @@
-//! Fourier epicycle math, compiled to WebAssembly and called from the web worker.
+//! Fourier epicycle math for Fourier Borders, compiled to WebAssembly.
 
 use wasm_bindgen::prelude::*;
+
+pub mod complex;
+pub mod fft;
+#[cfg(test)]
+mod test_util;
 
 /// Toolchain spike: sums a `Float64Array` passed from JS.
 ///
@@ -8,14 +13,4 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 pub fn spike_sum(values: &[f64]) -> f64 {
     values.iter().sum()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn spike_sum_adds_values() {
-        assert_eq!(spike_sum(&[1.0, 2.0, 3.5]), 6.5);
-    }
 }
